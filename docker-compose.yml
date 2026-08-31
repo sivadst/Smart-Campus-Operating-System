@@ -2,7 +2,11 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smartcampus-app
+    restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
@@ -12,13 +16,21 @@ services:
       - DB_NAME=smartcampus
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - JWT_SECRET=4b2a8d1e9f3c7a6b5d8e4f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - campus-network
 
   postgres:
     image: postgres:15-alpine
+    container_name: smartcampus-postgres
+    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -27,11 +39,32 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/migration/V1__initial_schema.sql:/docker-entrypoint-initdb.d/V1__initial_schema.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - campus-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: smartcampus-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - campus-network
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  campus-network:
+    driver: bridge
