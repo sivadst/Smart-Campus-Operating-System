@@ -1,8 +1,10 @@
-package com.campus.smartcampus.config;
+﻿package com.campus.smartcampus.config;
 
+import com.campus.smartcampus.security.CustomAccessDeniedHandler;
 import com.campus.smartcampus.security.CustomUserDetailsService;
 import com.campus.smartcampus.security.JwtAuthenticationEntryPoint;
 import com.campus.smartcampus.security.JwtAuthenticationFilter;
+import com.campus.smartcampus.security.RateLimitingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +29,9 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitingFilter rateLimitingFilter;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -51,20 +55,25 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configure(http))
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(unauthorizedHandler)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
-        // Required to allow H2 console frames
+        // Allow H2 console frame embed
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
