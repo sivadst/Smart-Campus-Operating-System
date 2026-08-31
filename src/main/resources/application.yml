@@ -3,6 +3,17 @@ spring:
     name: smartcampus
   profiles:
     active: dev
+  cache:
+    type: simple
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
 
 ---
 spring:
@@ -28,9 +39,9 @@ spring:
       path: /h2-console
   security:
     jwt:
-      secret: 4b2a8d1e9f3c7a6b5d8e4f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c # 256-bit hex secret
-      expiration: 900000 # 15 minutes in ms
-      refresh-expiration: 604800000 # 7 days in ms
+      secret: 4b2a8d1e9f3c7a6b5d8e4f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c
+      expiration: 900000
+      refresh-expiration: 604800000
 
 ---
 spring:
