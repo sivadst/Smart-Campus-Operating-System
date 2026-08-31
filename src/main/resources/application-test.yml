@@ -1,0 +1,24 @@
+﻿spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+  security:
+    jwt:
+      secret: dGVzdC1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tZ2VuZXJhdGlvbi1pbi10ZXN0LWVudmlyb25tZW50
+      expiration: 900000
+      refresh-expiration: 604800000
+
+logging:
+  level:
+    root: WARN
+    com.campus.smartcampus: DEBUG
