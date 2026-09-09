@@ -97,7 +97,7 @@ class EnrollmentServiceTest {
     @Test
     @DisplayName("Should throw when capacity exceeded")
     void enrollStudent_CapacityFull_ThrowsException() {
-        course.setCurrentEnrollment(60); // equals maxEnrollment
+        course.setCurrentEnrollment(60);
 
         EnrollmentRequest request = EnrollmentRequest.builder()
                 .studentId(studentId).courseId(courseId)
@@ -125,5 +125,46 @@ class EnrollmentServiceTest {
 
         assertThatThrownBy(() -> enrollmentService.enrollStudent(request))
                 .isInstanceOf(DuplicateResourceException.class);
+    }
+
+    @Test
+    @DisplayName("Should not decrement capacity when withdrawal is already completed")
+    void withdrawEnrollment_AlreadyInactive_DoesNothing() {
+        UUID enrollmentId = UUID.randomUUID();
+        Enrollment enrollment = Enrollment.builder()
+                .id(enrollmentId).student(student).course(course)
+                .academicYear("2026-2027").semester(1)
+                .isActive(false)
+                .build();
+
+        when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+
+        enrollmentService.withdrawEnrollment(enrollmentId);
+
+        verify(enrollmentRepository, never()).save(any(Enrollment.class));
+        verify(courseRepository, never()).save(any(Course.class));
+        assertThat(course.getCurrentEnrollment()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Should withdraw active enrollment and decrement capacity")
+    void withdrawEnrollment_ActiveEnrollment_DecrementsCapacity() {
+        UUID enrollmentId = UUID.randomUUID();
+        Enrollment enrollment = Enrollment.builder()
+                .id(enrollmentId).student(student).course(course)
+                .academicYear("2026-2027").semester(1)
+                .isActive(true)
+                .build();
+
+        when(enrollmentRepository.findById(enrollmentId)).thenReturn(Optional.of(enrollment));
+        when(enrollmentRepository.save(any(Enrollment.class))).thenReturn(enrollment);
+        when(courseRepository.save(any(Course.class))).thenReturn(course);
+
+        enrollmentService.withdrawEnrollment(enrollmentId);
+
+        assertThat(enrollment.isActive()).isFalse();
+        assertThat(course.getCurrentEnrollment()).isEqualTo(9);
+        verify(enrollmentRepository).save(enrollment);
+        verify(courseRepository).save(course);
     }
 }
