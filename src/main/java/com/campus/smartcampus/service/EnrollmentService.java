@@ -92,6 +92,11 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Enrollment", "id", enrollmentId));
 
+        if (!enrollment.isActive()) {
+            log.info("Enrollment {} is already withdrawn; no changes made", enrollmentId);
+            return;
+        }
+
         enrollment.setActive(false);
         enrollmentRepository.save(enrollment);
 
