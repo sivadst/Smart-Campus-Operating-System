@@ -102,6 +102,27 @@ class RoomBookingServiceTest {
     }
 
     @Test
+    @DisplayName("Should reject approval when another confirmed booking conflicts")
+    void approveBooking_ExistingConflict_ThrowsException() {
+        RoomBooking pending = RoomBooking.builder()
+                .id(bookingId).room(room).bookedBy(user).startTime(start).endTime(end)
+                .status(BookingStatus.PENDING)
+                .build();
+        RoomBooking existing = RoomBooking.builder()
+                .id(UUID.randomUUID()).room(room).status(BookingStatus.CONFIRMED)
+                .build();
+
+        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(pending));
+        when(bookingRepository.findConflictingBookings(roomId, start, end)).thenReturn(List.of(existing));
+
+        assertThatThrownBy(() -> bookingService.approveBooking(bookingId, "admin@campus.edu"))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("conflicting confirmed booking");
+
+        verify(bookingRepository, never()).save(any(RoomBooking.class));
+    }
+
+    @Test
     @DisplayName("Should approve pending booking")
     void approveBooking_PendingStatus_UpdatesToConfirmed() {
         RoomBooking booking = RoomBooking.builder()
@@ -109,6 +130,8 @@ class RoomBookingServiceTest {
                 .build();
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findConflictingBookings(roomId, booking.getStartTime(), booking.getEndTime()))
+                .thenReturn(Collections.emptyList());
         when(bookingRepository.save(any(RoomBooking.class))).thenReturn(booking);
 
         RoomBookingResponse response = bookingService.approveBooking(bookingId, "admin@campus.edu");
