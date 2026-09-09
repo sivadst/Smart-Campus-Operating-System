@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.dto.request;
+package com.campus.smartcampus.dto.request;
 
 import com.campus.smartcampus.enums.AttendanceStatus;
 import jakarta.validation.constraints.NotNull;

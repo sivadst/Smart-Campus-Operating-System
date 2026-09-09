@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.repository;
+package com.campus.smartcampus.repository;
 
 import com.campus.smartcampus.entity.RoomBooking;
 import com.campus.smartcampus.enums.BookingStatus;

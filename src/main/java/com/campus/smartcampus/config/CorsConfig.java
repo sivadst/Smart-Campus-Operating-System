@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.config;
+package com.campus.smartcampus.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

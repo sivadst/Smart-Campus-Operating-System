@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.service;
+package com.campus.smartcampus.service;
 
 import com.campus.smartcampus.entity.Attendance;
 import com.campus.smartcampus.entity.Course;

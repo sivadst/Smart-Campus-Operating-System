@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.util;
+package com.campus.smartcampus.util;
 
 import com.campus.smartcampus.dto.response.PaginatedResponse;
 import org.springframework.data.domain.Page;

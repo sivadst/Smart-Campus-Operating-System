@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.config;
+package com.campus.smartcampus.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

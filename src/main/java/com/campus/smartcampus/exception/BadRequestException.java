@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.exception;
+package com.campus.smartcampus.exception;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.config;
+package com.campus.smartcampus.config;
 
 import com.campus.smartcampus.entity.Department;
 import com.campus.smartcampus.entity.User;

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.dto.response;
+package com.campus.smartcampus.dto.response;
 
 import com.campus.smartcampus.enums.BookCategory;
 import lombok.*;

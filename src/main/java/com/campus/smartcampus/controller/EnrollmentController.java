@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.controller;
+package com.campus.smartcampus.controller;
 
 import com.campus.smartcampus.dto.request.EnrollmentRequest;
 import com.campus.smartcampus.dto.response.ApiResponse;

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.security;
+package com.campus.smartcampus.security;
 
 import com.campus.smartcampus.dto.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;

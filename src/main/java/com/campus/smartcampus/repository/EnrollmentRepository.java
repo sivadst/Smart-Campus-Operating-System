@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.repository;
+package com.campus.smartcampus.repository;
 
 import com.campus.smartcampus.entity.Enrollment;
 import org.springframework.data.jpa.repository.JpaRepository;

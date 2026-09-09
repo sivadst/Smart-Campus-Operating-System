@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.enums;
+package com.campus.smartcampus.enums;
 
 public enum AttendanceStatus {
     PRESENT,
