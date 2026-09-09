@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.service;
+package com.campus.smartcampus.service;
 
 import com.campus.smartcampus.dto.response.NotificationResponse;
 import com.campus.smartcampus.entity.Notification;

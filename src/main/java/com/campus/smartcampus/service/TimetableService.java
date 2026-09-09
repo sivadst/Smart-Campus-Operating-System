@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.service;
+package com.campus.smartcampus.service;
 
 import com.campus.smartcampus.dto.request.TimetableRequest;
 import com.campus.smartcampus.dto.response.TimetableResponse;

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.repository;
+package com.campus.smartcampus.repository;
 
 import com.campus.smartcampus.entity.Notification;
 import org.springframework.data.domain.Page;
@@ -19,6 +19,6 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     long countByRecipientIdAndIsReadFalse(UUID recipientId);
 
     @Modifying
-    @Query("UPDATE Notification n SET n.isRead = true, n.readAt = CURRENT_TIMESTAMP WHERE n.recipient.id = :recipientId AND n.isRead = false")
+    @Query("UPDATE Notification n SET n.isRead = true, n.readAt = CURRENT_INSTANT() WHERE n.recipient.id = :recipientId AND n.isRead = false")
     void markAllAsReadForUser(@Param("recipientId") UUID recipientId);
 }

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.security;
+package com.campus.smartcampus.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

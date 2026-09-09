@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.entity;
+package com.campus.smartcampus.entity;
 
 import com.campus.smartcampus.audit.Auditable;
 import com.campus.smartcampus.enums.NotificationType;

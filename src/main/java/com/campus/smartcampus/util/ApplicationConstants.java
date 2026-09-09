@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.util;
+package com.campus.smartcampus.util;
 
 public final class ApplicationConstants {
 

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.event;
+package com.campus.smartcampus.event;
 
 import com.campus.smartcampus.enums.NotificationType;
 import com.campus.smartcampus.service.NotificationService;

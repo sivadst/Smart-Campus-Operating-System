@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.event;
+package com.campus.smartcampus.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

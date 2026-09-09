@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.config;
+package com.campus.smartcampus.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

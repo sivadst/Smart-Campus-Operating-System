@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.exception;
+package com.campus.smartcampus.exception;
 
 import com.campus.smartcampus.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;

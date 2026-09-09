@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.controller;
+package com.campus.smartcampus.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

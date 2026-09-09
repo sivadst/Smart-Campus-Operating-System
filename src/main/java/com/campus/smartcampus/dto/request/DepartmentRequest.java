@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.dto.request;
+package com.campus.smartcampus.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

@@ -1,4 +1,4 @@
-﻿package com.campus.smartcampus.security;
+package com.campus.smartcampus.security;
 
 import com.campus.smartcampus.entity.User;
 import com.campus.smartcampus.enums.UserRole;
