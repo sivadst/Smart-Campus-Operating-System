@@ -89,6 +89,13 @@ public class RoomBookingService {
             throw new BadRequestException("Only pending bookings can be approved");
         }
 
+        List<RoomBooking> conflicts = bookingRepository.findConflictingBookings(
+                booking.getRoom().getId(), booking.getStartTime(), booking.getEndTime());
+        if (!conflicts.isEmpty()) {
+            throw new BadRequestException("Room " + booking.getRoom().getRoomNumber() +
+                    " has a conflicting confirmed booking during the requested time slot");
+        }
+
         booking.setStatus(BookingStatus.CONFIRMED);
         booking.setApprovedBy(approvedBy);
         RoomBooking saved = bookingRepository.save(booking);
