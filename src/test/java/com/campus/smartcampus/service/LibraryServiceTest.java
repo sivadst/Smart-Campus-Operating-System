@@ -35,9 +35,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("LibraryService Unit Tests")
 class LibraryServiceTest {
 
-    @Mock private BookRepository bookRepository;
-    @Mock private BookIssueRepository bookIssueRepository;
-    @Mock private UserRepository userRepository;
+    @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private BookIssueRepository bookIssueRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private LibraryService libraryService;
@@ -112,8 +117,8 @@ class LibraryServiceTest {
     }
 
     @Test
-    @DisplayName("Should issue book successfully")
-    void issueBook_ValidRequest_ReturnsIssueResponse() {
+    @DisplayName("Should issue book successfully using locked book lookup")
+    void issueBook_ValidRequest_UsesLockedLookupAndReturnsIssueResponse() {
         BookIssueRequest request = BookIssueRequest.builder()
                 .bookId(bookId)
                 .userId(userId)
@@ -129,9 +134,10 @@ class LibraryServiceTest {
                 .status(BookIssueStatus.ISSUED)
                 .build();
 
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findByIdForUpdate(bookId)).thenReturn(Optional.of(book));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(bookIssueRepository.countByUserIdAndStatus(userId, BookIssueStatus.ISSUED)).thenReturn(1L);
+        when(bookIssueRepository.countByUserIdAndStatus(
+                userId, BookIssueStatus.ISSUED)).thenReturn(1L);
         when(bookIssueRepository.save(any(BookIssue.class))).thenReturn(issue);
 
         BookIssueResponse response = libraryService.issueBook(request);
@@ -139,6 +145,9 @@ class LibraryServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getBookTitle()).isEqualTo("Effective Java");
         assertThat(response.getStatus()).isEqualTo(BookIssueStatus.ISSUED);
+
+        verify(bookRepository).findByIdForUpdate(bookId);
+        verify(bookRepository, never()).findById(bookId);
     }
 
     @Test
@@ -151,11 +160,14 @@ class LibraryServiceTest {
                 .userId(userId)
                 .build();
 
-        when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        when(bookRepository.findByIdForUpdate(bookId)).thenReturn(Optional.of(book));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         assertThatThrownBy(() -> libraryService.issueBook(request))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("No available copies");
+
+        verify(bookRepository).findByIdForUpdate(bookId);
+        verify(bookIssueRepository, never()).save(any(BookIssue.class));
     }
 }
