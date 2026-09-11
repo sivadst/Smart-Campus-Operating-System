@@ -82,7 +82,7 @@ public class LibraryService {
 
     @Transactional
     public BookIssueResponse issueBook(BookIssueRequest request) {
-        Book book = bookRepository.findById(request.getBookId())
+        Book book = bookRepository.findByIdForUpdate(request.getBookId())
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", request.getBookId()));
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", request.getUserId()));
