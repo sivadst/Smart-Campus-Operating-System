@@ -1,0 +1,443 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Smart Campus Operating System API",
+    "description": "Comprehensive Postman API Collection for the Smart Campus OS platform. Includes authentication workflows, campus resource management, attendance, room bookings, library circulation, events, notices, and data streaming endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"faculty.cs@smartcampus.edu\",\n  \"password\": \"SecurePass@2026\",\n  \"firstName\": \"Alan\",\n  \"lastName\": \"Turing\",\n  \"phone\": \"+1-555-0101\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.data && jsonData.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.data.refreshToken);",
+                  "    console.log('Access token stored successfully.');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@smartcampus.edu\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Users",
+      "item": [
+        {
+          "name": "List Users (Paginated)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id"],
+              "variable": [{ "key": "id", "value": "user-uuid-here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Departments",
+      "item": [
+        {
+          "name": "Create Department",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"AI-DS\",\n  \"name\": \"Artificial Intelligence and Data Science\",\n  \"description\": \"Department of AI and Data Engineering\",\n  \"headOfDepartment\": \"Dr. John McCarthy\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "departments"]
+            }
+          }
+        },
+        {
+          "name": "List All Departments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "departments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Courses",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CS401\",\n  \"name\": \"Distributed Operating Systems\",\n  \"description\": \"Advanced cloud and distributed computing\",\n  \"credits\": 4,\n  \"semester\": 7,\n  \"departmentId\": \"dept-uuid-here\",\n  \"maxEnrollment\": 60\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses"]
+            }
+          }
+        },
+        {
+          "name": "List Courses (Paginated)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/courses?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "courses"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Rooms & Buildings",
+      "item": [
+        {
+          "name": "Create Building",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"TECH-CENTRE\",\n  \"name\": \"Advanced Technology Centre\",\n  \"address\": \"Campus North Wing\",\n  \"totalFloors\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/buildings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "buildings"]
+            }
+          }
+        },
+        {
+          "name": "Create Room",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"TC-204\",\n  \"name\": \"Cloud Computing Lab\",\n  \"roomType\": \"COMPUTER_LAB\",\n  \"capacity\": 60,\n  \"floor\": 2,\n  \"buildingId\": \"building-uuid-here\",\n  \"hasProjector\": true,\n  \"hasAC\": true,\n  \"hasWifi\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rooms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "rooms"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Room Bookings",
+      "item": [
+        {
+          "name": "Request Room Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": \"room-uuid-here\",\n  \"purpose\": \"ACM Student Chapter Hackathon Kickoff\",\n  \"startTime\": \"2026-09-25T14:00:00Z\",\n  \"endTime\": \"2026-09-25T18:00:00Z\",\n  \"attendeeCount\": 45\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/room-bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "room-bookings"]
+            }
+          }
+        },
+        {
+          "name": "Approve Room Booking",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/room-bookings/:id/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "room-bookings", ":id", "approve"],
+              "variable": [{ "key": "id", "value": "booking-uuid-here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Attendance",
+      "item": [
+        {
+          "name": "Mark Attendance",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentId\": \"student-uuid-here\",\n  \"courseId\": \"course-uuid-here\",\n  \"attendanceDate\": \"2026-09-21\",\n  \"status\": \"PRESENT\",\n  \"remarks\": \"Attended full lecture\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance"]
+            }
+          }
+        },
+        {
+          "name": "Student Attendance Summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/attendance/student/:studentId/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "attendance", "student", ":studentId", "summary"],
+              "variable": [{ "key": "studentId", "value": "student-uuid-here" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Library Catalog & Circulation",
+      "item": [
+        {
+          "name": "Add Book to Catalog",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isbn\": \"978-0132350884\",\n  \"title\": \"Clean Code: A Handbook of Agile Software Craftsmanship\",\n  \"author\": \"Robert C. Martin\",\n  \"publisher\": \"Prentice Hall\",\n  \"publishedYear\": 2008,\n  \"category\": \"COMPUTER_SCIENCE\",\n  \"totalCopies\": 10,\n  \"shelfLocation\": \"CS-01-A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/books",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "books"]
+            }
+          }
+        },
+        {
+          "name": "Search Books",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/books/search?title=Clean&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "books", "search"],
+              "query": [
+                { "key": "title", "value": "Clean" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Issue Book",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": \"book-uuid-here\",\n  \"userId\": \"student-uuid-here\",\n  \"issueDays\": 14\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/library/issue",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "library", "issue"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Data Export",
+      "item": [
+        {
+          "name": "Export Attendance CSV",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/export/attendance?courseId=course-uuid-here&date=2026-09-21",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "export", "attendance"],
+              "query": [
+                { "key": "courseId", "value": "course-uuid-here" },
+                { "key": "date", "value": "2026-09-21" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Course Catalog CSV",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/export/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "export", "courses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Health & Diagnostics",
+      "item": [
+        {
+          "name": "Public API Health",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "public", "health"]
+            }
+          }
+        },
+        {
+          "name": "Spring Boot Actuator Health",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Spring Boot Actuator Metrics",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/actuator/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "metrics"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
