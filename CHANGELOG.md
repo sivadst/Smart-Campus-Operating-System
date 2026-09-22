@@ -1,8 +1,27 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to the Smart Campus Operating System are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [1.1.0] - 2026-09-22
+
+### Added
+- **Controller Test Suite**: MockMvc unit tests for 10 previously untested controllers
+  - EventControllerTest, EnrollmentControllerTest, NoticeControllerTest
+  - BuildingControllerTest, RoomControllerTest, RoomBookingControllerTest
+  - AttendanceControllerTest, UserControllerTest, TransportControllerTest
+  - NotificationControllerTest
+- **Utility Tests**: DateTimeUtilsTest covering date formatting, parsing, academic calendar helpers
+- **Utility Tests**: PaginationUtilsTest covering pageable construction and edge cases
+- **Exception Handler Tests**: GlobalExceptionHandlerTest for all 10 exception handler methods
+
+### Technical Details
+- Controller test coverage expanded from 5/17 to 15/17 controllers
+- Total test classes increased from 22 to 35
+- All tests follow standalone MockMvc pattern with Mockito mocks
+
+---
 
 ## [1.0.0] - 2026-08-31
 
