@@ -68,7 +68,9 @@ public class GlobalExceptionHandler {
                 .getAllErrors()
                 .stream()
                 .map(error -> {
-                    String fieldName = ((FieldError) error).getField();
+                    String fieldName = error instanceof FieldError
+                            ? ((FieldError) error).getField()
+                            : "request";
                     String errorMessage = error.getDefaultMessage();
                     return fieldName + ": " + errorMessage;
                 })
