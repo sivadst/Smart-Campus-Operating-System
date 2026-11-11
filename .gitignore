@@ -1,28 +1,21 @@
 # Build output
+out/
 target/
+build/
 *.class
-*.jar
-*.war
 
 # IDE
 .idea/
-*.iml
 .vscode/
-.settings/
-.project
-.classpath
-*.swp
-*.swo
-
-# Maven wrapper (already committed)
-!.mvn/wrapper/maven-wrapper.jar
+*.iml
 
 # OS
 .DS_Store
-Thumbs.db
 
-# Logs
+# Logs & temp
 *.log
+todo.txt
+*.tmp
 
-# Environment
-.env
+# Node (tooling only, not part of the project)
+node_modules/
